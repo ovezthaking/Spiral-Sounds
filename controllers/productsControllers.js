@@ -13,16 +13,17 @@ export async function getGenres(req, res) {
     genres = genres.map(g => g.genre)
 
     res.json(genres)
+    db.close()
 
   } catch (err) {
 
-    res.status(500).json({error: 'Failed to fetch genres', details: err.message})
-
+    console.error(err)
+    res.status(500).json({error: 'Failed to fetch genres'})
   }
 
 }
 
-export async function getProducts() {
+export async function getProducts(req, res) {
 
   console.log('products')
 
