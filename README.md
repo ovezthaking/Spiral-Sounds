@@ -39,7 +39,7 @@ curl "http://localhost:8000/api/products?genre=Rock"
 
 **Database:**
 
-The project uses a local DB (files in `db/`). Helper scripts to create and seed the DB are located in `helpers/` (`createTable.js`, `seedTable.js`, `logTable.js`). Run them with `node helpers/<name>.js` to initialize the DB.
+The project uses a local DB (files in `db/`). Sql scripts to create and seed the DB are located in `sql/` (`createTable.js`, `seedTable.js`, `logTable.js`). Run them with `node sql/<name>.js` to initialize the DB.
 
 **Notes & suggestions:**
 
@@ -50,7 +50,7 @@ The project uses a local DB (files in `db/`). Helper scripts to create and seed 
 
 If you want, I can:
 - add brief JSON response examples for the endpoints;
-- add instructions on how to create and seed the database (specific commands `node helpers/createTable.js` and `node helpers/seedTable.js`);
+- add instructions on how to create and seed the database (specific commands `node sql/createTable.js` and `node sql/seedTable.js`);
 - check `package.json` and add a `start` script if missing.
 
 If you want, I can perform one of the above actions — just let me know which one.
@@ -93,7 +93,7 @@ curl "http://localhost:8000/api/products?genre=Rock"
 
 **Baza danych:**
 
-Projekt korzysta z lokalnej bazy (pliki w folderze `db/`). W folderze `helpers/` znajdują się skrypty pomocnicze do tworzenia tabel i seedowania danych (`createTable.js`, `seedTable.js`, `logTable.js`). Uruchom je za pomocą `node helpers/<nazwa>.js` jeśli chcesz zainicjować DB lokalnie.
+Projekt korzysta z lokalnej bazy (pliki w folderze `db/`). W folderze `sql/` znajdują się skrypty pomocnicze do tworzenia tabel i seedowania danych (`createTable.js`, `seedTable.js`, `logTable.js`). Uruchom je za pomocą `node sql/<nazwa>.js` jeśli chcesz zainicjować DB lokalnie.
 
 **Uwagi i sugestie:**
 
@@ -103,7 +103,7 @@ Projekt korzysta z lokalnej bazy (pliki w folderze `db/`). W folderze `helpers/`
 Jeśli chcesz, mogę:
 
 - dodać krótkie przykłady odpowiedzi JSON dla endpointów;
-- dodać instrukcję jak utworzyć bazę i zseedować dane (konkretne komendy `node helpers/createTable.js` i `node helpers/seedTable.js`);
+- dodać instrukcję jak utworzyć bazę i zseedować dane (konkretne komendy `node sql/createTable.js` i `node sql/seedTable.js`);
 - sprawdzić `package.json` i dodać skrypt `start` jeśli go brakuje.
 
 Jeśli chcesz, wykonam jedną z powyższych akcji — powiedz która.
