@@ -32,7 +32,7 @@ export async function registerUser(req, res) {
     let query = 'SELECT username FROM users WHERE username = ? OR email = ?' 
     let params = [username, email]
 
-    const dbCheck = await db.all(query, params)
+    const dbCheck = await db.get(query, params)
 
     if (dbCheck.length){
         return res.status(400).json({error: 'Username or an E-mail already in use'})
