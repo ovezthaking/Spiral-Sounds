@@ -1,6 +1,7 @@
 import validator from 'validator'
 import { getDBConnection } from '../db/db.js';
 import bcrypt from 'bcryptjs'
+import session from 'express-session';
 
 
 export async function registerUser(req, res) {
@@ -83,7 +84,7 @@ export async function loginUser(req, res) {
     const user = await db.get(query, username)
 
     if (!user || !await bcrypt.compare(password, user.password)){
-      return res.status(400).json({error: 'Invalid credentials'})
+      return res.status(401).json({error: 'Invalid credentials'})
     }
 
     req.session.userId = user.id
@@ -93,4 +94,24 @@ export async function loginUser(req, res) {
     console.error('Login error:', err.message)
     res.status(500).json({ error: 'Login failed. Please try again.' })
   }
+}
+
+/*
+Challenge:
+1. Create a function which logs out the user. 
+- You can use the .destroy() method directly on the session.
+- .destroy() takes a callback function which you can use to send a confirmation response with this JSON:
+  { message: 'Logged out' }
+
+You will need to write code here and in one other place!
+
+Test with:
+username: test
+password: test
+*/
+
+export async function logoutUser(req, res) {
+  req.session.destroy( () => {
+    res.json({ message: 'Logged out' })
+  })
 }
