@@ -13,18 +13,40 @@ export async function getGenres(req, res) {
     genres = genres.map(g => g.genre)
 
     res.json(genres)
-    db.close()
-
+    
   } catch (err) {
 
     console.error(err)
     res.status(500).json({error: 'Failed to fetch genres'})
+  } finally {
+
+    db.close()
+
   }
 
+  
 }
 
 export async function getProducts(req, res) {
 
-  console.log('products')
+  try {
+
+    const db = await getDBConnection()
+
+    let query = 'SELECT * FROM products'
+
+    const products = await db.all(query)
+    
+    res.json(products)
+    
+  } catch (err) {
+
+    console.error(err)
+    res.status(500).json({error: 'Failed to fetch products'})
+  } finally{
+
+    db.close()
+
+  }
 
 }
