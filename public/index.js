@@ -2,9 +2,11 @@
 const toggle = document.querySelector('.menu-toggle')
 const menu = document.querySelector('.header-menu')
 
-toggle.addEventListener('click', () => {
-  menu.classList.toggle('open')
-})
+if (toggle && menu) {
+  toggle.addEventListener('click', () => {
+    menu.classList.toggle('open')
+  })
+}
 
 // ===== Product Fetching =====
 
@@ -18,34 +20,44 @@ async function getProducts(filters = {}) {
 
 function renderProducts(products) {
   const albumsContainer = document.getElementById('products-container')
-  const cards = products.map((album) => {
-    return `
-      <div class="product-card">
-        <img src="./images/${album.image}" alt="${album.title}">
-        <h2>${album.title}</h2>
-        <h3>${album.artist}</h3>
-        <p>$${album.price}</p>
-        <button class="add-btn">Add to Cart</button>
-        <p class="genre-label">${album.genre}</p>
-      </div>
-    `
-  }).join('')
+  if (!albumsContainer) return
+  albumsContainer.innerHTML = '' // Clear previous content
+  products.forEach((album) => {
+    const card = document.createElement('div')
+    card.className = 'product-card'
 
-  albumsContainer.innerHTML = cards
+    const img = document.createElement('img')
+    // Only allow image filenames (no slashes, no protocols)
+    const safeImage = typeof album.image === 'string' && /^[\w\-\.]+$/.test(album.image) ? album.image : 'default.png'
+    img.src = `./images/${safeImage}`
+    img.alt = album.title || ''
+    card.appendChild(img)
+
+    const h2 = document.createElement('h2')
+    h2.textContent = album.title || ''
+    card.appendChild(h2)
+
+    const h3 = document.createElement('h3')
+    h3.textContent = album.artist || ''
+    card.appendChild(h3)
+
+    const priceP = document.createElement('p')
+    priceP.textContent = `$${album.price}`
+    card.appendChild(priceP)
+
+    const addBtn = document.createElement('button')
+    addBtn.className = 'add-btn'
+    addBtn.textContent = 'Add to Cart'
+    card.appendChild(addBtn)
+
+    const genreP = document.createElement('p')
+    genreP.className = 'genre-label'
+    genreP.textContent = album.genre || ''
+    card.appendChild(genreP)
+
+    albumsContainer.appendChild(card)
+  })
 }
-
-// ===== Initial Load =====
-
-/**
- * Fetches and displays all products on initial page load.
- */
-async function init() {
-  const products = await getProducts()
-  renderProducts(products)
-  populateGenreSelect()
-}
-
-init()
 
 // ===== Genre Dropdown =====
 
@@ -53,16 +65,33 @@ init()
  * Populates the genre dropdown with available genres from the API.
  */
 async function populateGenreSelect() {
-  const res = await fetch('/api/products/genres')
-  const genres = await res.json()
-  const select = document.getElementById('genre-select')
+  try {
+    const res = await fetch('/api/products/genres')
+    if (!res.ok) {
+      console.error('Failed to fetch genres:', res.status, res.statusText)
+      return
+    }
+    const genres = await res.json()
+    const select = document.getElementById('genre-select')
+    if (!select) return
+    select.innerHTML = '' // clear existing options
+    genres.forEach(genre => {
+      const option = document.createElement('option')
+      option.value = genre
+      option.textContent = genre
+      select.appendChild(option)
+    })
+  } catch (error) {
+    console.error('Network error while fetching genres:', error)
+  }
+}
 
-  genres.forEach(genre => {
-    const option = document.createElement('option')
-    option.value = genre
-    option.textContent = genre
-    select.appendChild(option)
-  })
+// ===== Initialization =====
+
+async function init() {
+  await populateGenreSelect()
+  const products = await getProducts()
+  renderProducts(products)
 }
 
 // ===== Filter Handling =====
@@ -71,7 +100,9 @@ async function populateGenreSelect() {
  * Fetches and renders products based on the current search input.
  */
 async function applySearchFilter() {
-  const search = document.getElementById('search-input').value.trim()
+  const input = document.getElementById('search-input')
+  if (!input) return
+  const search = input.value.trim()
   const filters = {}
   if (search) filters.search = search
 
@@ -81,23 +112,30 @@ async function applySearchFilter() {
 
 // ===== Event Listeners =====
 
-document.getElementById('search-input').addEventListener('input', (e) => {
-  e.preventDefault()
-  applySearchFilter()
-})
+const searchInput = document.getElementById('search-input')
+if (searchInput) {
+  searchInput.addEventListener('input', () => {
+    applySearchFilter()
+  })
+}
 
-// prevent 'enter' from submitting
-document.getElementById('search-input').addEventListener('submit', (e) => {
-  e.preventDefault()
-})
+const form = document.querySelector('form')
+if (form) {
+  // prevent default submit and run search
+  form.addEventListener('submit', (e) => {
+    e.preventDefault()
+    applySearchFilter()
+  })
+}
 
-document.querySelector('form').addEventListener('submit', (e) => {
-  e.preventDefault()
-  applySearchFilter() // your function to run the search
-})
+const genreSelect = document.getElementById('genre-select')
+if (genreSelect) {
+  genreSelect.addEventListener('change', async (e) => {
+    const genre = e.target.value
+    const products = await getProducts(genre ? { genre } : {})
+    renderProducts(products)
+  })
+}
 
-document.getElementById('genre-select').addEventListener('change', async (e) => {
-  const genre = e.target.value
-  const products = await getProducts(genre ? { genre } : {})
-  renderProducts(products)
-})
+// start the app
+init()
