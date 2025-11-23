@@ -27,8 +27,6 @@ export async function registerUser(req, res) {
 
 
   try {
-
-    password = await bcrypt.hash(password, 10)
     
     const db = await getDBConnection()
 
@@ -43,10 +41,11 @@ export async function registerUser(req, res) {
 
     await db.exec('BEGIN TRANSACTION')
 
-    
+    hashed = await bcrypt.hash(password, 10)
+
     await db.run(`INSERT INTO users (name, email, username, password)
         VALUES (?, ?, ?, ?)`,
-        [ name, email, username, password ]
+        [ name, email, username, hashed ]
     )
    
 
