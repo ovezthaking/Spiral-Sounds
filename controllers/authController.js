@@ -23,7 +23,7 @@ export async function registerUser(req, res) {
     return res.status(400).json({error: 'Bad format of email'})
   }
 
-  console.log(req.body)
+  //console.log(req.body)
 
 
   try {
