@@ -12,7 +12,7 @@ export async function getGenres(req, res) {
 
     genres = genres.map(g => g.genre)
 
-    res.status(200).json(genres)
+    res.json(genres)
 
   } catch (err) {
 
