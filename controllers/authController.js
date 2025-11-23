@@ -66,5 +66,31 @@ export async function registerUser(req, res) {
 
 
 export async function loginUser(req, res) {
-  
+
+  let { username, password } = req.body
+
+  if (!username || !password){
+    return res.status(400).json({error: 'All fields are required'})
+  }
+
+  username = username.trim()
+
+  try {
+    const db = await getDBConnection()
+
+    const query = 'SELECT id, username, password FROM users WHERE username = ?'
+
+    const user = await db.get(query, username)
+
+    if (!user || !await bcrypt.compare(password, user.password)){
+      return res.status(400).json({error: 'Invalid credentials'})
+    }
+
+    req.session.userId = user.id
+    res.status(200).json({message: 'Logged in'})
+
+  } catch (err) {
+    console.error('Login error:', err.message)
+    res.status(500).json({ error: 'Login failed. Please try again.' })
+  }
 }
