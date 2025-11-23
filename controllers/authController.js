@@ -1,5 +1,6 @@
 import validator from 'validator'
 import { getDBConnection } from '../db/db.js';
+import bcrypt from 'bcryptjs'
 
 
 export async function registerUser(req, res) {
@@ -26,6 +27,8 @@ export async function registerUser(req, res) {
 
 
   try {
+
+    password = await bcrypt.hash(password, 10)
     
     const db = await getDBConnection()
 
