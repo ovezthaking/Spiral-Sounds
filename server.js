@@ -2,6 +2,7 @@ import express from 'express'
 import { productsRouter } from './routes/products.js'
 import { authRouter } from './routes/auth.js'
 import session from 'express-session'
+import { meRouter } from './routes/me.js'
 
 const app = express()
 const PORT = 8000
