@@ -1,10 +1,9 @@
 import { getDBConnection } from '../db/db.js'
 
 export async function getGenres(req, res) {
-
+  const db = await getDBConnection()
+  
   try {
-
-    const db = await getDBConnection()
 
     const query = 'SELECT DISTINCT genre FROM products'
     
@@ -28,14 +27,20 @@ export async function getGenres(req, res) {
 }
 
 export async function getProducts(req, res) {
+  const db = await getDBConnection()
 
   try {
 
-    const db = await getDBConnection()
-
     let query = 'SELECT * FROM products'
+    const {genre} = req.query
+    let params = []
 
-    const products = await db.all(query)
+    if(genre){
+      query = 'SELECT * FROM products WHERE genre = ?'
+      params.push(genre)
+    }
+
+    const products = await db.all(query,params)
     
     res.json(products)
     
