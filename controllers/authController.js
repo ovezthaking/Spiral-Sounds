@@ -41,12 +41,16 @@ export async function registerUser(req, res) {
 
     await db.exec('BEGIN TRANSACTION')
 
-    hashed = await bcrypt.hash(password, 10)
+    const hashed = await bcrypt.hash(password, 10)
 
-    await db.run(`INSERT INTO users (name, email, username, password)
+    const result = await db.run(`INSERT INTO users (name, email, username, password)
         VALUES (?, ?, ?, ?)`,
         [ name, email, username, hashed ]
     )
+
+    console.log(result)
+
+    req.session.userId = result.lastID
    
 
     await db.exec('COMMIT')
