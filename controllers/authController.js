@@ -34,7 +34,7 @@ export async function registerUser(req, res) {
 
     const dbCheck = await db.get(query, params)
 
-    if (dbCheck.length){
+    if (dbCheck){
         return res.status(400).json({error: 'Username or an E-mail already in use'})
     }
 
