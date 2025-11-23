@@ -36,7 +36,7 @@ export async function getProducts(req, res) {
     let params = []
 
     if(genre){
-      query = 'SELECT * FROM products WHERE genre = ?'
+      query += ' WHERE genre = ?'
       params.push(genre)
     }
 
