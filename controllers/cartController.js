@@ -82,18 +82,43 @@ export async function getAll(req, res) {
     res.json({items: items})
 
   } catch (err) {
-    
+        console.error('Error reading a cart content: ', err)
+        res.status(400).json({error: 'Failed to read a cart content'})
   }
 }
 
 
 export async function deleteItem(req, res) {
     
+    if (!req.session.userId) {
+    return res.json({err: 'not logged in'})
+    }
+
+    const userId = req.session.userId
+    const itemId = parseInt(req.params.itemId, 10)
+
+    if (isNaN(itemId)){
+        return res.status(400).json({ error: 'Invalid item ID'})
+    }
+
     try {
         
         const db = await getDBConnection()
+        
+        const item = await db.get(`SELECT * FROM cart_items WHERE user_id = ? AND
+            id = ?`, [userId, itemId])
+
+        if(!item){
+            return res.status(400).json({error: 'Item not found'})
+        }
+
+        const query = 'DELETE FROM cart_items WHERE user_id = ? AND id = ?'
+
+        await db.run(query, [userId, itemId])
+        res.status(204).send()
 
     } catch (err) {
-        
+        console.error('Error deleting an item: ', err)
+        res.status(400).json({error: 'Failed to delete an item'})
     }
 }
