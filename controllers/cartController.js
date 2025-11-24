@@ -41,3 +41,25 @@ export async function addToCart(req, res) {
         res.status(400).json({error: 'Failed to add to cart'})
     }
 }
+
+
+export async function getCartCount(req, res) {
+
+    if (!req.session.userId){
+        return res.status(400).json({error: 'User not logged in'})
+    }
+
+    try {
+        const db = await getDBConnection()
+
+        const query = `SELECT SUM(quantity) AS totalQuantity
+                        FROM cart_items
+                        WHERE user_id = ?`
+        const result = await db.get(query, req.session.userId)
+
+        res.json({totalItems: result.totalQuantity || 0})   //totalItems bcs Frontend requires it
+    } catch (err) {
+        console.error('Error reading a cart count: ', err)
+        res.status(400).json({error: 'Failed to read a cart count'})
+    }
+}
