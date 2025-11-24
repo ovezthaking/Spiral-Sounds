@@ -85,3 +85,15 @@ export async function getAll(req, res) {
     
   }
 }
+
+
+export async function deleteItem(req, res) {
+    
+    try {
+        
+        const db = await getDBConnection()
+
+    } catch (err) {
+        
+    }
+}
