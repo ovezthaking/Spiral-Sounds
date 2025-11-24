@@ -30,7 +30,7 @@ app.use('/api/auth/me', meRouter)
 
 app.use('/api/auth', authRouter)
 
-app.use('api/cart', cartRouter)
+app.use('/api/cart', cartRouter)
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`)
