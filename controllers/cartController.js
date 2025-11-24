@@ -63,3 +63,25 @@ export async function getCartCount(req, res) {
         res.status(400).json({error: 'Failed to read a cart count'})
     }
 }
+
+
+export async function getAll(req, res) {
+
+  if (!req.session.userId) {
+    return res.json({err: 'not logged in'})
+  }
+
+  try {
+
+    const db = await getDBConnection()
+
+    const items = await db.all(`SELECT ci.id AS cartItemId, ci.quantity, p.title,
+         p.artist, p.price FROM cart_items ci JOIN products p ON p.id = ci.product_id 
+         WHERE ci.user_id = ?`, req.session.userId)
+
+    res.json({items: items})
+
+  } catch (err) {
+    
+  }
+}
