@@ -122,3 +122,33 @@ export async function deleteItem(req, res) {
         res.status(400).json({error: 'Failed to delete an item'})
     }
 }
+
+
+export async function deleteAll(req, res) {
+
+   if (!req.session.userId) {
+    return res.json({err: 'not logged in'})
+    }
+
+    const userId = req.session.userId
+
+    try {
+        
+        const db = await getDBConnection()
+        
+        const items = await db.get(`SELECT * FROM cart_items WHERE user_id = ?`, userId)
+
+        if(!items){
+            return res.status(400).json({error: 'Items not found'})
+        }
+
+        const query = 'DELETE FROM cart_items WHERE user_id = ?'
+
+        await db.run(query, userId)
+        res.status(204).send()
+
+    } catch (err) {
+        console.error('Error deleting items: ', err)
+        res.status(400).json({error: 'Failed to delete items'})
+    }
+}

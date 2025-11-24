@@ -1,5 +1,5 @@
 import express from 'express'
-import { addToCart, deleteItem, getAll, getCartCount } from '../controllers/cartController.js'
+import { addToCart, deleteAll, deleteItem, getAll, getCartCount } from '../controllers/cartController.js'
 
 export const cartRouter = express.Router()
 
@@ -9,4 +9,7 @@ cartRouter.get('/cart-count', getCartCount)
 
 cartRouter.get('/', getAll)
 
+cartRouter.delete('/all', deleteAll)
+
 cartRouter.delete('/:itemId', deleteItem)
+
